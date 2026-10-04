@@ -6,7 +6,8 @@ const INSTRUCTIONS = `You are DevContext, an assistant that answers questions ab
 You have tools to list the repo's files, read any file, and search its code.
 Always ground answers in what the tools return: call repo_structure first if you are unsure
 where something lives, then read_file for details. Never guess file contents.
-When you answer, cite the file paths you relied on. Be concise and specific.`;
+When you answer, cite the file paths you relied on. Be concise and specific.
+In follow-up questions, reuse what you already learned instead of re-reading files.`;
 
 function json(statusCode, body) {
   return {
@@ -17,7 +18,6 @@ function json(statusCode, body) {
 }
 
 export const handler = async (event) => {
-  // Function URLs deliver the body as a string (possibly base64-encoded).
   let payload;
   try {
     const raw = event.isBase64Encoded
@@ -28,7 +28,7 @@ export const handler = async (event) => {
     return json(400, { error: "Request body must be JSON." });
   }
 
-  const { question, owner, repo } = payload;
+  const { question, owner, repo, previousResponseId } = payload;
   if (!question || !owner || !repo) {
     return json(400, { error: "Required fields: question, owner, repo." });
   }
@@ -36,7 +36,10 @@ export const handler = async (event) => {
   const request = {
     model: MODEL,
     instructions: INSTRUCTIONS,
-    input: `Repository: ${owner}/${repo}\n\nQuestion: ${question}`,
+    // On the first turn, name the repo. On follow-ups the model already knows it.
+    input: previousResponseId
+      ? question
+      : `Repository: ${owner}/${repo}\n\nQuestion: ${question}`,
     tools: [
       {
         type: "mcp",
@@ -48,6 +51,7 @@ export const handler = async (event) => {
       },
     ],
   };
+  if (previousResponseId) request.previous_response_id = previousResponseId;
 
   let data;
   try {
@@ -71,7 +75,6 @@ export const handler = async (event) => {
     return json(502, { error: "Could not reach OpenAI." });
   }
 
-  // Pull the final text and a summary of each tool call out of the output items.
   const answer = (data.output ?? [])
     .filter((item) => item.type === "message")
     .flatMap((item) => item.content ?? [])
@@ -90,6 +93,7 @@ export const handler = async (event) => {
   return json(200, {
     answer,
     toolCalls,
+    responseId: data.id,
     model: data.model,
     usage: data.usage,
   });

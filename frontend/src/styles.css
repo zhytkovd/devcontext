@@ -1,0 +1,345 @@
+:root {
+  --paper: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #1d2733;
+  --ink-soft: #5b6775;
+  --line: #d9dee5;
+  --accent: #4a56c8;
+  --accent-soft: #e8eaf8;
+  --danger: #b4423b;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* Top bar ------------------------------------------------------------ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 0 1rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.repo {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.repo-label {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+
+.repo input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  border-bottom: 1px dashed var(--line);
+  background: transparent;
+  padding: 0.125rem 0;
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.repo input:focus {
+  outline: none;
+  border-bottom: 1px solid var(--accent);
+}
+
+.ghost {
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.ghost:hover,
+.ghost:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+
+/* Thread ------------------------------------------------------------- */
+.thread {
+  flex: 1;
+  padding: 1.5rem 0 2rem;
+}
+
+.intro {
+  padding-top: 2.5rem;
+}
+
+.intro-lead {
+  max-width: 34rem;
+  margin: 0 0 1.75rem;
+  font-size: 1.125rem;
+  color: var(--ink-soft);
+}
+
+.starters {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.starters button {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.starters button:hover,
+.starters button:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.turn + .turn {
+  margin-top: 2.25rem;
+  padding-top: 2.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.question {
+  margin: 0 0 1rem;
+  font-weight: 600;
+  font-size: 1.0625rem;
+}
+
+/* The tool trail: what the model actually did ------------------------- */
+.trail {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 6px 6px 0;
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+
+.trail li {
+  display: flex;
+  gap: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trail .tool {
+  color: var(--accent);
+  min-width: 9ch;
+}
+
+.trail .arg {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trail-error .tool,
+.trail-error .arg {
+  color: var(--danger);
+}
+
+.trail-pending {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ink-soft);
+}
+
+.pulse {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none; }
+}
+
+/* Answer prose ------------------------------------------------------- */
+.answer > :first-child { margin-top: 0; }
+.answer > :last-child { margin-bottom: 0; }
+
+.answer p,
+.answer ul,
+.answer ol {
+  margin: 0 0 0.9rem;
+}
+
+.answer code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.05em 0.35em;
+}
+
+.answer pre {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+}
+
+.answer pre code {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.error {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--danger);
+  color: var(--danger);
+  background: var(--surface);
+  border-radius: 0 6px 6px 0;
+}
+
+/* Composer ----------------------------------------------------------- */
+.composer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  padding: 1rem 0 1.25rem;
+  background: linear-gradient(to bottom, rgba(246, 247, 249, 0), var(--paper) 30%);
+}
+
+.composer textarea {
+  flex: 1;
+  resize: none;
+  min-height: 2.75rem;
+  max-height: 10rem;
+  padding: 0.65rem 0.875rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.composer textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.composer textarea:disabled {
+  color: var(--ink-soft);
+}
+
+.composer button {
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.composer button:disabled {
+  background: var(--line);
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+.composer button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 540px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+  }
+  .repo {
+    flex-basis: 100%;
+    order: 3;
+  }
+}
+
+.answer a {
+  color: var(--accent);
+  text-decoration-color: var(--line);
+  text-underline-offset: 0.15em;
+}
+
+.answer a:hover {
+  text-decoration-color: var(--accent);
+}
