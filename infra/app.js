@@ -82,7 +82,10 @@ class DevContextStack extends Stack {
     const chatUrl = chatFunction.addFunctionUrl({
       authType: lambda.FunctionUrlAuthType.NONE,
       cors: {
-        allowedOrigins: ["*"], // tightened to the Amplify domain in Phase 5
+        allowedOrigins: [
+          "https://main.d3gcrotthe39k2.amplifyapp.com",
+          "http://localhost:5173",
+        ],
         allowedMethods: [lambda.HttpMethod.POST],
         allowedHeaders: ["Content-Type"],
       },
